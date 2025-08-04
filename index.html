@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kế hoạch tập luyện</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 10px;
+      margin: 0;
+    }
+
+    h2 {
+      text-align: center;
+      color: red;
+      margin-top: 30px;
+    }
+
+    .button-container {
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .no-print {
+      display: inline-block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      margin-bottom: 30px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+      background-color: white;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    th {
+      background-color: #d8ecff;
+      color: red;
+    }
+
+    td[contenteditable="true"] {
+      white-space: pre-wrap;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+      width: 40px;
+    }
+
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    @media screen and (max-width: 600px) {
+      table, th, td {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="content">
+
+  <!-- LỊCH TẬP -->
+  <h2>LỊCH TẬP</h2>
+  <table id="lichTap">
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>BÀI TẬP</th>
+        <th>GHI CHÚ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td contenteditable="true"></td>
+        <td contenteditable="true"></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="button-container no-print">
+    <button onclick="addLichTapRow()">+ Thêm dòng</button>
+    <button onclick="removeLichTapRow()">🗑 Xoá dòng</button>
+  </div>
+
+  <!-- Các bảng BUỔI -->
+  <div id="sessions"></div>
+
+</div>
+
+<!-- Nút thêm buổi và xuất ảnh -->
+<div class="button-container no-print">
+  <button onclick="addSession()">+ Thêm Buổi</button>
+  <button onclick="exportToImage()">⬇ Tải ảnh</button>
+</div>
+
+<!-- Thư viện chụp ảnh -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+  // LỊCH TẬP: thêm/xoá dòng
+  function addLichTapRow() {
+    const table = document.querySelector("#lichTap tbody");
+    const rowCount = table.rows.length + 1;
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${rowCount}</td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+    `;
+    table.appendChild(row);
+  }
+
+  function removeLichTapRow() {
+    const table = document.querySelector("#lichTap tbody");
+    if (table.rows.length > 1) {
+      table.deleteRow(table.rows.length - 1);
+    }
+  }
+
+  // Buổi tập
+  let sessionCount = 0;
+
+  function addSession() {
+    sessionCount++;
+    const container = document.getElementById('sessions');
+
+    const sessionHTML = `
+      <h2>BUỔI ${sessionCount}</h2>
+      <table id="session-${sessionCount}">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>TÊN Đ.TÁC</th>
+            <th>TEMPO</th>
+            <th>HIỆP</th>
+            <th>CÁI/LẦN</th>
+            <th>THỜI GIAN</th>
+            <th>GHI CHÚ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="button-container no-print">
+        <button onclick="addRow(${sessionCount})">+ Thêm dòng</button>
+        <button onclick="removeRow(${sessionCount})">🗑 Xoá dòng</button>
+      </div>
+    `;
+
+    container.insertAdjacentHTML("beforeend", sessionHTML);
+  }
+
+  function addRow(sessionId) {
+    const table = document.querySelector(`#session-${sessionId} tbody`);
+    const rowCount = table.rows.length + 1;
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+      <td>${rowCount}</td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+    `;
+    table.appendChild(newRow);
+  }
+
+  function removeRow(sessionId) {
+    const table = document.querySelector(`#session-${sessionId} tbody`);
+    if (table.rows.length > 1) {
+      table.deleteRow(table.rows.length - 1);
+    }
+  }
+
+  // Chụp toàn trang thành ảnh
+  function exportToImage() {
+    const content = document.getElementById('content');
+    document.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+
+    html2canvas(content).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'ke_hoach_tap_luyen.png';
+      link.href = canvas.toDataURL();
+      link.click();
+
+      document.querySelectorAll('.no-print').forEach(el => el.style.display = 'inline-block');
+    });
+  }
+</script>
+
+</body>
+</html>
